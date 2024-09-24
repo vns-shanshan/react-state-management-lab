@@ -127,12 +127,24 @@ const App = () => {
       <h2>Money: {money}</h2>
       <h2>Team Strength: </h2>
       <h2>Team Agility: </h2>
+
       <h2>Team</h2>
-      <ul>
-        {/* {team.length === 0
-          ? "Pick some team members!"
-          : } */}
-      </ul>
+      {team.length === 0 ? (
+        <p>Pick some team members!</p>
+      ) : (
+        <ul>
+          {team.map((fighter, index) => (
+            <li key={index}>
+              <img src={fighter.img} alt={fighter.name} />
+
+              <p>{fighter.name}</p>
+              <p>Price: {fighter.price}</p>
+              <p>Strength: {fighter.strength}</p>
+              <p>Agility: {fighter.agility}</p>
+            </li>
+          ))}
+        </ul>
+      )}
 
       <h2>Fighters</h2>
       <ul>
