@@ -77,12 +77,25 @@ const zombieFighters = [
 ];
 // -----------------------------------
 
+// ---------- Helper function ------------
+function calculateTotalStrength(team) {
+  return team.reduce((total, fighter) => total + fighter.strength, 0);
+}
+
+function calculateTotalAgility(team) {
+  return team.reduce((total, fighter) => total + fighter.agility, 0);
+}
+// -----------------------------------
+
+// ---------- ZombieFighter Component ------------
 export function ZombieFighter({
   zombieFighter,
   money,
   setMoney,
   team,
   setTeam,
+  setTotalStrength,
+  setTotalAgility,
 }) {
   const { name, price, strength, agility, img } = zombieFighter;
 
@@ -93,12 +106,18 @@ export function ZombieFighter({
       return;
     }
 
-    // update the team
+    // Update the team
     const newTeamArr = [...team, zombieFighter];
     setTeam(newTeamArr);
 
     // Subtract fighter price from money
     setMoney(money - price);
+
+    // Recalculate total strength
+    setTotalStrength(calculateTotalStrength(newTeamArr));
+
+    // Recalculate total agility
+    setTotalAgility(calculateTotalAgility(newTeamArr));
   }
 
   return (
@@ -114,34 +133,87 @@ export function ZombieFighter({
     </li>
   );
 }
+// -----------------------------------
+
+// ---------- TeamZombieFighter Component ------------
+export function TeamZombieFighter({
+  teamZombiefighter,
+  setTotalStrength,
+  setTotalAgility,
+  team,
+  setTeam,
+  money,
+  setMoney,
+}) {
+  const { img, name, price, strength, agility } = teamZombiefighter;
+
+  function handleRemoveFighter() {
+    // remove fighter from team array
+    const idx = team.indexOf(teamZombiefighter);
+
+    if (idx > -1) {
+      const newTeamArr = [...team];
+      newTeamArr.splice(idx, 1);
+      setTeam(newTeamArr);
+
+      // Recalculate total strength
+      setTotalStrength(calculateTotalStrength(newTeamArr));
+
+      // Recalculate total agility
+      setTotalAgility(calculateTotalAgility(newTeamArr));
+
+      // Recalculate money
+      setMoney(money + price);
+    }
+  }
+
+  return (
+    <li>
+      <img src={img} alt={name} />
+
+      <p>{name}</p>
+      <p>Price: {price}</p>
+      <p>Strength: {strength}</p>
+      <p>Agility: {agility}</p>
+
+      <button onClick={handleRemoveFighter}>Remove</button>
+    </li>
+  );
+}
+// -----------------------------------
 
 // ----------- App -----------------
 const App = () => {
   const [team, setTeam] = useState([]);
   const [money, setMoney] = useState(100);
+  const [totalStrength, setTotalStrength] = useState(0);
+  const [totalAgility, setTotalAgility] = useState(0);
 
   return (
     <>
       <h1>Zombie Fighters</h1>
 
       <h2>Money: {money}</h2>
-      <h2>Team Strength: </h2>
-      <h2>Team Agility: </h2>
+      <h2>Team Strength: {totalStrength}</h2>
+      <h2>Team Agility: {totalAgility}</h2>
 
       <h2>Team</h2>
       {team.length === 0 ? (
         <p>Pick some team members!</p>
       ) : (
         <ul>
-          {team.map((fighter, index) => (
-            <li key={index}>
-              <img src={fighter.img} alt={fighter.name} />
-
-              <p>{fighter.name}</p>
-              <p>Price: {fighter.price}</p>
-              <p>Strength: {fighter.strength}</p>
-              <p>Agility: {fighter.agility}</p>
-            </li>
+          {team.map((teamZombiefighter, index) => (
+            <TeamZombieFighter
+              teamZombiefighter={teamZombiefighter}
+              key={index}
+              totalStrength={totalStrength}
+              setTotalStrength={setTotalStrength}
+              setTotalAgility={setTotalAgility}
+              team={team}
+              setTeam={setTeam}
+              money={money}
+              setMoney={setMoney}
+            />
           ))}
         </ul>
       )}
@@ -156,6 +228,9 @@ const App = () => {
             setMoney={setMoney}
             team={team}
             setTeam={setTeam}
+            totalStrength={totalStrength}
+            setTotalStrength={setTotalStrength}
+            setTotalAgility={setTotalAgility}
           />
         ))}
       </ul>
