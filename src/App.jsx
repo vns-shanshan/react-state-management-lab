@@ -2,9 +2,7 @@
 import { useState } from "react";
 import "./App.css";
 
-// ------- Initial States ----------
-const team = [];
-const money = 100;
+// ------- Data ----------
 const zombieFighters = [
   {
     name: "Survivor",
@@ -79,8 +77,29 @@ const zombieFighters = [
 ];
 // -----------------------------------
 
-export function ZombieFighter({ zombieFighter }) {
+export function ZombieFighter({
+  zombieFighter,
+  money,
+  setMoney,
+  team,
+  setTeam,
+}) {
   const { name, price, strength, agility, img } = zombieFighter;
+
+  function handleAddFighter() {
+    // Check if have enough money
+    if (money < price) {
+      console.log("Not enough money!");
+      return;
+    }
+
+    // update the team
+    const newTeamArr = [...team, zombieFighter];
+    setTeam(newTeamArr);
+
+    // Subtract fighter price from money
+    setMoney(money - price);
+  }
 
   return (
     <li>
@@ -96,13 +115,10 @@ export function ZombieFighter({ zombieFighter }) {
   );
 }
 
-function handleAddFighter() {
-  console.log("Fighter Added!");
-}
-
 // ----------- App -----------------
 const App = () => {
   const [team, setTeam] = useState([]);
+  const [money, setMoney] = useState(100);
 
   return (
     <>
@@ -112,12 +128,23 @@ const App = () => {
       <h2>Team Strength: </h2>
       <h2>Team Agility: </h2>
       <h2>Team</h2>
-      <ul>{team}</ul>
+      <ul>
+        {/* {team.length === 0
+          ? "Pick some team members!"
+          : } */}
+      </ul>
 
       <h2>Fighters</h2>
       <ul>
         {zombieFighters.map((zombieFighter, index) => (
-          <ZombieFighter zombieFighter={zombieFighter} key={index} />
+          <ZombieFighter
+            key={index}
+            zombieFighter={zombieFighter}
+            money={money}
+            setMoney={setMoney}
+            team={team}
+            setTeam={setTeam}
+          />
         ))}
       </ul>
     </>
