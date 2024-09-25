@@ -15,14 +15,6 @@ function calculateTeamAgilityTotal(arr) {
 }
 // -----------------------------------
 
-// ---------- ZombieFighter Component ------------
-
-// -----------------------------------
-
-// ---------- TeamZombieFighter Component ------------
-
-// -----------------------------------
-
 // ----------- App -----------------
 const App = () => {
   const [team, setTeam] = useState([]);
